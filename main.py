@@ -29,7 +29,7 @@ def heatmap(dataf):
     plt.show()
 
 
-def allcortogether(dataf):
+def allCor(dataf):
     # all cooreleation graphs together
     for i in dataf:
         for k in dataf:
@@ -37,7 +37,7 @@ def allcortogether(dataf):
     plt.show()
 
 
-def allcorseperated(dataf):
+def allCorSeperated(dataf):
     # all cooreleation graphs seperated
     for i in dataf:
         for k in dataf:
@@ -47,72 +47,78 @@ def allcorseperated(dataf):
             plt.show()
 
 
-def allcorcomparison(dataf):
+def allCorComparison(dataf):
     sns.pairplot(dataf)
 
 
-def speccor(dataf, namex, namey):
+def specCor(dataf, namex, namey):
     plt.scatter(dataf[namex], dataf[namey])
     plt.xlabel(namex)
     plt.ylabel(namey)
     plt.show()
 
 
-def linearreg(dataf, namex, namey):
+def linearReg(dataf, namex, namey):
     sns.regplot(x=dataf[namex], y=dataf[namey], data=dataf, line_kws={
         "color": "#4B0082"}, scatter_kws={"color": "#9932CC"})
+    plt.title("Regressão Linear")
     plt.show()
 
 
-def calcreg(dataf, namex, namey):
+def calcReg(dataf, namex, namey):
     x = dataf[[namex]]
     y = dataf[[namey]]
+
     rl = LinearRegression().fit(x, y)
-    # beta 1
+
+    # beta 0
     print(rl.intercept_)
-    # beta 2
+
+    # beta 1
     print(rl.coef_)
+
     return rl, x, y
 
 
-def getbetas(dataf, namex, namey):
+def getBetas(dataf, namex, namey):
     return np.polyfit(dataf[namex], dataf[namey], deg=1)
 
 
-def getpredicted(rl, x, y):
-    # mse
-    # Predict
+def getPredicted(rl, x, y):
+    # Predict Y value based on given X value
     y_predicted = rl.predict(x)
+
     # model evaluation
+    # mse
     mse = sklearn.metrics.mean_squared_error(y, y_predicted)
-    plt.scatter(x, y, color='red')
-    plt.plot(x, y_predicted, color='blue')
-    plt.title('Y vs X')
-    plt.xlabel('X')
-    plt.ylabel('Y')
-    plt.show()
     print(mse)
     print(f'Y = {rl.intercept_[0]} + {rl.coef_[0][0]} + {mse}')
 
 
+# main - Variables Declarations
 namex = "fixed acidity"
 namey = "citric acid"
 
 dataf = readfile('./assets/winequality-red.csv',
                  cols=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
 
-# graficos de dispersao
+# dispersion graph
 print(dataf)
 print(dataf.corr())
 
 # all graphs
 heatmap(dataf)
-allcortogether(dataf)
-# allcorseperated(dataf)
-allcorcomparison(dataf)
-speccor(dataf, namex, namey)
-linearreg(dataf, namex, namey)
-rl, x, y = calcreg(dataf, namex, namey)
-# b, a = getbetas(dataf, namex, namey)
-getpredicted(rl, x, y)
+allCor(dataf)
+
+# allCorSeperated(dataf)
+
+allCorComparison(dataf)
+specCor(dataf, namex, namey)
+linearReg(dataf, namex, namey)
+
+rl, x, y = calcReg(dataf, namex, namey)
+getPredicted(rl, x, y)
+
+# b, a = getBetas(dataf, namex, namey)
+
 plt.show()
